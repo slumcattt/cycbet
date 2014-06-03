@@ -1,0 +1,5 @@
+Django==1.6.5
+MySQL-Connector-Python==1.1.7
+MySQL-python==1.2.5
+bitcoin-python==0.3
+virtualenv==1.11.6
