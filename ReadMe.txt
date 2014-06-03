@@ -39,6 +39,21 @@ You can now run locally, but you must configure for heroku.
 
 >(venv)C:..Desktop/myproject>pip freeze>requirements.txt
 
+actually do this:
+requirements.txt
+
+Django==1.6
+dj-database-url==0.2.2
+dj-static==0.0.5
+gunicorn==18.0
+psycopg2==2.5.1
+static==0.4
+wsgiref==0.1.2
+bitcoin-python==0.3
+virtualenv==1.11.6
+
+no need to have a mybitcoinrpc now that i have bitcoin-python in requirements.txt
+
 add Procfile (no extension) to product root directory, add stuff from heroku tutorial to settings.py and
 wsgi.py
 
@@ -96,7 +111,14 @@ Press enter at the prompt to upload your existing ssh key or create a new one, u
 $heroku create
 
 $git push heroku master
+Might get some errors:
+make sure requirements.txt is the same as on heroku django site
+in git bash do 
+$git mv Procfile.txt Procfile
+$git add .
+$git commit -m "renamed procfile"
 
+git push heroku master
 $heroku keys:add (might need to do this if i get a public key error)
 ---------------------
 Then, every time you want to deploy to heroku
