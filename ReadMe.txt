@@ -69,3 +69,42 @@ $git init
 $git add .
 $git commit -m "first commit"
 
+To commit git needs to know 'who I am'
+
+$git --global user.email 'myemail@dsddsds.com"
+$git --global user.name 'Aiden"
+
+Now commit
+
+download heroku toolbelt from heroku site:
+After installing the Toolbelt, you’ll have access to the heroku command from your command shell. 
+Authenticate using the email address and password you used when creating your Heroku account:
+
+
+
+$ heroku login
+Enter your Heroku credentials.
+Email: adam@example.com
+Password:
+Could not find an existing public key.
+Would you like to generate one? [Yn]
+Generating new SSH public key.
+Uploading ssh public key /Users/adam/.ssh/id_rsa.pub
+
+Press enter at the prompt to upload your existing ssh key or create a new one, used for pushing code later on.
+
+$heroku create
+
+$git push heroku master
+
+$heroku keys:add (might need to do this if i get a public key error)
+---------------------
+Then, every time you want to deploy to heroku
+$ git add -A
+$ git commit -m "commit for deploy to heroku"
+...
+
+$ git push -f heroku
+
+
+
