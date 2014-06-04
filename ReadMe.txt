@@ -76,9 +76,7 @@ http://stackoverflow.com/questions/10744305/how-to-create-gitignore-file
     4.Then rename the file in the command line, with ren gitignore.txt .gitignore
 
 *.pyc
-mybitcoinrpc/  (copy bitcoinrpc folder (jgarzik pip install bitcoin-python thing) to myproject directory, 
-rename mybitcoinrpc, add a config file, make it able to connect to my wallet and change the config file to 
-connect_to_remote (add rpcallowip=WHATEVR.MY.IP.IS)
+
 
 $git init
 $git add .
@@ -127,6 +125,32 @@ $ git commit -m "commit for deploy to heroku"
 ...
 
 $ git push -f heroku
+
+
+============
+
+host bitcoind on some site (digitalocean)
+have website on another
+
+start a 'droplet' on digital ocean
+
+Follow instructions to make a friendly local UI for doing the rest:
+https://www.digitalocean.com/community/articles/how-to-log-into-your-droplet-with-putty-for-windows-users
+
+when you login the first time, use the password emailed to gmail acct
+
+copy the reddit script:
+http://www.reddit.com/r/Bitcoin/comments/1se3zd/how_to_create_a_full_bitcoin_node_in_a_5_ubuntu/
+
+The preceding script set the rpcuser rpcpassword to random in the wallets bitcoin.conf file
+- I don't want them random because I want to connect to this from my other website using bitcoinrpc calls
+bitcoinrpc
+in putty console
+cd ~/.bitcoin
+config="bitcoin.conf"
+touch $config
+echo "rpcuser=aiden" >> $config
+echo "rpcpassword=Peyton18" >> $config
 
 
 
