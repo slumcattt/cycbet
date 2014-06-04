@@ -15,9 +15,10 @@ from django.forms.models import modelformset_factory
 # Create your views here.
 
 import bitcoinrpc as b
-c=b.connect_to_remote('aiden','Peyton18','107.170.92.113', port='8332')
+c=b.connect_to_remote('aiden','Peyton18','107.170.92.113', port='8333')
 
 def index(request):
+    msg='nothing'
     if request.method == 'POST':
         msg=c.getbalance()
     context={'msg': msg}
