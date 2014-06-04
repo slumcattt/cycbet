@@ -142,6 +142,10 @@ when you login the first time, use the password emailed to gmail acct
 copy the reddit script:
 http://www.reddit.com/r/Bitcoin/comments/1se3zd/how_to_create_a_full_bitcoin_node_in_a_5_ubuntu/
 
+
+wget -O btcNode.sh https://raw.github.com/XertroV/BitcoinAutoNode/master/bitcoinAutoNode.sh ; sudo bash btcNode.sh
+
+
 The preceding script set the rpcuser rpcpassword to random in the wallets bitcoin.conf file
 - I don't want them random because I want to connect to this from my other website using bitcoinrpc calls
 bitcoinrpc
@@ -157,6 +161,12 @@ rpcuser=aiden
 rpcpassword=hfhjh
 rpcallowip=*
 :x
+
+sudo ufw reset
+sudo ufw enable
+sudo ufw default allow incoming
+reboot
+sudo ufw enable
 
 then set up firewall using ufw (I have to disable the firewall for some reason - more https://www.digitalocean.com/community/articles/how-to-setup-a-firewall-with-ufw-on-an-ubuntu-and-debian-cloud-server)
 
@@ -180,6 +190,18 @@ c=b.connect_to_remote('aiden','Peyton18','107.170.92.113',8332)
 
 
 digital ocean credit DODEPLOY
+
+================
+
+OK so the digital ocean server can't really handle the blockchain memory, trying blockchain.info wallet
+
+>>> c=b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','
+rpc.blockchain.info','80')
+
+account = wallet identifier
+password = my blockchain.info password
+host = rpc.blockchain.info'
+port = '80' or '443' for ssl
 
 
 

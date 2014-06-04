@@ -15,7 +15,8 @@ from django.forms.models import modelformset_factory
 # Create your views here.
 
 import bitcoinrpc as b
-c=b.connect_to_remote('aiden','Peyton18','107.170.92.113',8332)
+#c=b.connect_to_remote('aiden','Peyton18','107.170.92.113',8332)
+c=b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','rpc.blockchain.info','80')
 
 def index(request):
     msg='nothing'
