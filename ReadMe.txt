@@ -147,10 +147,39 @@ The preceding script set the rpcuser rpcpassword to random in the wallets bitcoi
 bitcoinrpc
 in putty console
 cd ~/.bitcoin
-config="bitcoin.conf"
-touch $config
-echo "rpcuser=aiden" >> $config
-echo "rpcpassword=Peyton18" >> $config
+
+vim bitcoin.conf
+i
+make bitcoin.conf look like:
+server=1
+daemon=1
+rpcuser=aiden
+rpcpassword=hfhjh
+rpcallowip=*
+:x
+
+then set up firewall using ufw (I have to disable the firewall for some reason - more https://www.digitalocean.com/community/articles/how-to-setup-a-firewall-with-ufw-on-an-ubuntu-and-debian-cloud-server)
+
+sudo ufw enable
+sudo ufw allow 8322/tcp
+sudo ufw allow 22/tcp
+sudo ufw default deny incoming
+sudo ufw allow from 71.178.208.222 #my ip, subject to change
+sudo ufw allow from (https://devcenter.heroku.com/articles/proximo - use this to get a static OUTBOUND ip for heroku app)
+
+now the bitcoin and putty ports are open (8322 and 22, respectively and all incoming requests are blocked
+except for coming from my heroku and my local, but because I don't have a static ip yet, i'm just going to disable ufw
+>sudo ufw disable)
+
+
+reboot
+
+Now I have a real-deal connection with:
+c=b.connect_to_remote('aiden','Peyton18','107.170.92.113',8332)
+
+
+
+digital ocean credit DODEPLOY
 
 
 

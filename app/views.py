@@ -8,7 +8,7 @@ from django.db.models import Max,Count, Min, Sum, Avg
 from models import *
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
-#Model formsets for 'table forms' - forms in the tables for all the visit sub-tasks
+from django.contrib.auth import authenticate, login, logout
 
 from django.forms.models import modelformset_factory
 
@@ -23,3 +23,7 @@ def index(request):
         msg=c.getbalance()
     context={'msg': msg}
     return render(request, 'app/index.html',context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('app.views.index')
