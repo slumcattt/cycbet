@@ -53,7 +53,7 @@ ROOT_URLCONF = 'cyc_bet.urls'
 
 WSGI_APPLICATION = 'cyc_bet.wsgi.application'
 
-
+DATABASES={'default':{}}
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
@@ -74,11 +74,6 @@ if sys.platform == 'win32':
 
     STATIC_URL = '/static/'
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'postgresql_psycopg2',
-        }
-    }
     #HEROKU
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
