@@ -22,7 +22,8 @@ def index(request):
     msg='nothing'
     if request.method == 'POST':
         msg=c.getnewaddress()
-    context={'msg': msg}
+    racepic=RaceImage.objects.get(id=1).img
+    context={'msg': msg,'pic':racepic}
     return render(request, 'app/index.html',context)
 
 def logout_view(request):

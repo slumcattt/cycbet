@@ -51,6 +51,8 @@ static==0.4
 wsgiref==0.1.2
 bitcoin-python==0.3
 virtualenv==1.11.6
+Pillow==2.4.0
+
 
 no need to have a mybitcoinrpc now that i have bitcoin-python in requirements.txt
 
@@ -211,6 +213,9 @@ port = '80' or '443' for ssl
 set a second password - done on website, but apparently need to do this using
 
 c.setwalletpassphrase('passphrase',TIMEINSECONDS can't be more than 3600)
+
+also, from bash shell
+$heroku python manage.py syncdb (shell, etc)
 
 
 

@@ -29,8 +29,14 @@ class StageImage(models.Model):
     race = models.ForeignKey('Stage')
 
 class Race(models.Model):
+    NAT_CHOICES = (
+        ('US', 'USA'),
+        ('UK', 'United Kingdom'),
+        ('IT', 'Italy'),
+     )
     name = models.CharField(max_length=200)
     date = models.DateTimeField(verbose_name='Date', auto_now_add=True)
+    nat = models.CharField(max_length=50, null=True, blank=True, choices=NAT_CHOICES)
     def __str__(self):
         return self.name
 

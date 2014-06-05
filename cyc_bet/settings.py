@@ -69,6 +69,10 @@ if sys.platform == 'win32':
             'PORT': '3306',                      # Set to empty string for default.
         }
     }
+    MEDIA_ROOT = "C:/Users/aiden/desktop/cyc_bet/media/"
+    MEDIA_URL = '/media/'
+
+    STATIC_URL = '/static/'
 else:
     DATABASES = {
         'default': {
@@ -86,14 +90,15 @@ else:
     ALLOWED_HOSTS = ['*']
 
     # Static asset configuration
-    import os
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     STATIC_ROOT = 'staticfiles'
     STATIC_URL = '/static/'
 
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
+
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
 
 
 # Internationalization
@@ -110,8 +115,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
+
+
 
