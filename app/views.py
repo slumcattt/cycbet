@@ -21,7 +21,7 @@ c=b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','rpc.
 def index(request):
     msg='nothing'
     if request.method == 'POST':
-        msg=c.getbalance()
+        msg=c.getnewaddress()
     context={'msg': msg}
     return render(request, 'app/index.html',context)
 

@@ -195,13 +195,22 @@ digital ocean credit DODEPLOY
 
 OK so the digital ocean server can't really handle the blockchain memory, trying blockchain.info wallet
 
->>> c=b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','
-rpc.blockchain.info','80')
+>>> c=b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','rpc.blockchain.info','80')
+
+
+keikolucky1
+Lucky#101
+
 
 account = wallet identifier
-password = my blockchain.info password
+password = my blockchain.info password(s)
 host = rpc.blockchain.info'
 port = '80' or '443' for ssl
+
+
+set a second password - done on website, but apparently need to do this using
+
+c.setwalletpassphrase('passphrase',TIMEINSECONDS can't be more than 3600)
 
 
 
