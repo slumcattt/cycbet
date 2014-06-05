@@ -104,3 +104,4 @@ class Bet(models.Model):
       amt = models.FloatField(null=True, blank=True,verbose_name="bet amount mBtC")
       user = models.ForeignKey(User)
       paid=models.NullBooleanField(default=False)
+      parlay=models.BooleanField(null=False, blank=False, default=False)
