@@ -69,7 +69,11 @@ if sys.platform == 'win32':
             'PORT': '3306',                      # Set to empty string for default.
         }
     }
-
+else:
+    DATABASES = {
+        'default': {
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
