@@ -5,7 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'cyc_bet.views.home', name='home'),
+    url(r'^$', 'app.views.index', name='home'),
     url(r'^app/', include('app.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', 'django.contrib.auth.views.login',{'template_name': 'app/login.html'}),
