@@ -76,6 +76,7 @@ if sys.platform == 'win32':
 else:
     DATABASES = {
         'default': {
+            'ENGINE': 'postgresql_psycopg2',
         }
     }
     #HEROKU

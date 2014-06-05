@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4e8ed77-e04b-400f-a9e1-e1a1ba7fb86a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ReadMe.txt" afterPath="$PROJECT_DIR$/ReadMe.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/admin.py" afterPath="$PROJECT_DIR$/app/admin.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/templates/app/index.html" afterPath="$PROJECT_DIR$/app/templates/app/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models.py" afterPath="$PROJECT_DIR$/app/models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cyc_bet/settings.py" afterPath="$PROJECT_DIR$/cyc_bet/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cyc_bet/urls.py" afterPath="$PROJECT_DIR$/cyc_bet/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views.py" afterPath="$PROJECT_DIR$/app/views.py" />
     </list>
     <ignored path="cyc_bet.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -118,8 +112,8 @@
       <file leaf-file-name="settings.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cyc_bet/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8443223" vertical-offset="1222" max-vertical-offset="2159">
-              <caret line="99" column="17" selection-start-line="99" selection-start-column="17" selection-end-line="99" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.53296703" vertical-offset="1035" max-vertical-offset="2176">
+              <caret line="78" column="43" selection-start-line="78" selection-start-column="43" selection-end-line="78" selection-end-column="43" />
               <folding>
                 <element signature="e#318#328#0" expanded="true" />
               </folding>
@@ -637,8 +631,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cyc_bet/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8443223" vertical-offset="1222" max-vertical-offset="2159">
-          <caret line="99" column="17" selection-start-line="99" selection-start-column="17" selection-end-line="99" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.53296703" vertical-offset="1035" max-vertical-offset="2176">
+          <caret line="78" column="43" selection-start-line="78" selection-start-column="43" selection-end-line="78" selection-end-column="43" />
           <folding>
             <element signature="e#318#328#0" expanded="true" />
           </folding>
