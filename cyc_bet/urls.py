@@ -14,4 +14,4 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', 'django.contrib.auth.views.login',{'template_name': 'app/login.html'}),
     url(r'^logout/$', 'django.contrib.auth.views.logout',{'template_name': 'app/index.html','next_page': '/app/'}),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

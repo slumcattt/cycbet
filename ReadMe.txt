@@ -217,5 +217,14 @@ c.setwalletpassphrase('passphrase',TIMEINSECONDS can't be more than 3600)
 also, from bash shell
 $heroku python manage.py syncdb (shell, etc)
 
+to delete the heroku posgre database:
+
+1. delete from app webpage terminal
+2. in bash: $heroku addons:add heroku-postgresql
+3. push and run
+4. heroku run python manage.py syncdb
+
+
+icons - https://www.iconfinder.com/iconsets/flat-ui-icons-24-px
 
 
