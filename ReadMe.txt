@@ -11,7 +11,7 @@ cmd
 >mkdir myproject
 >cd myproject
 >virtualenv venv (will create venv folder inside current myproject directory)
->C:\Users\Aiden\Desktop\myproject\venv\scripts\activate.bat (cmd prompt will now have (venv))
+>C:\Users\Aiden\Desktop\cyc_bet\venv\scripts\activate.bat (cmd prompt will now have (venv))
 >pip install django-toolbelt (get come error about psycog2)
 save .exe to some place (download from http://stickpeople.com/projects/python/win-psycopg/)
 >(venv) cd to .exe
@@ -52,6 +52,7 @@ wsgiref==0.1.2
 bitcoin-python==0.3
 virtualenv==1.11.6
 Pillow==2.4.0
+beautifulsoup4==4.3.2
 
 
 no need to have a mybitcoinrpc now that i have bitcoin-python in requirements.txt
@@ -226,5 +227,8 @@ to delete the heroku posgre database:
 
 
 icons - https://www.iconfinder.com/iconsets/flat-ui-icons-24-px
+
+pip install beautifulsoup4
+(added to requirements, for scraping from procyclingstats - for sql.py)
 
 

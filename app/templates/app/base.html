@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,6 +10,7 @@
 
     <!-- Le styles -->
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+
 
     <style>
       body {
@@ -51,6 +53,8 @@
        .span8{background-color:white; text-align:center;/* height: 100vh; */}
         .span2{background-color:white; text-align:center;/* height: 100vh; */}
 
+        .bet_amt{width:25px}
+
 
     </style>
 
@@ -82,32 +86,190 @@
             <span class="icon-bar"></span>
           </button>
           <div class="nav-collapse collapse">
+              {%block uppernav %}
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
+                {%for r in races%} <li> <a href="{% url 'app.views.race' r.id%}"> {{r.name}}<br><small>{{r.start_date}} > {{r.end_date}}</small></a></li>
+                {% endfor %}
             </ul>
-                     <ul class="nav navbar-nav navbar-right">
-            {%if logged_in %}
-      <li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
+
+         {%if logged_in %}
+     <ul class="nav navbar-nav navbar-right">
+      <li><a>Funds: {{ account_balance }} mBtC</a></li>
+      <li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li></ul>
       {% else %}
-      <li><a href="{% url 'django.contrib.auth.views.login' %}">Log in</a></li>
+          <ul class="nav navbar-nav navbar-right">
+      <li><a href="{% url 'django.contrib.auth.views.login' %}">Log in</a></li></ul>
       {% endif %}
-      </ul>
+{%endblock %}
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
     <div class="container">
-     {% block content %} {% endblock %}
+        {%block content%}
+              <div class="row-fluid">
+    <div class="span2">
+
+
+        {%block left%}
+
+        <a class="brand" href="{% url 'app.views.index' %}"><img src="{{ STATIC_URL }}img/bike.png" class="med mid"></a>
+
+        <h4>Upcoming Races</h4>     <ul class="nav nav-tabs nav-stacked">
+     {% for r in races %}
+              <li> <a href="{% url 'app.views.race' r.id%}"> {{r.name}}<br><small>{{r.start_date}} > {{r.end_date}}</small></a></li>
+                {% endfor %}</ul>
+
+
+{%endblock%}
+
+    </div><!--span left -->
+    <div class="span6">
+
+        {%block middle%}
+
+
+{%endblock%}
+    </div><!--span main -->
+                  <div class="span4">
+
+                      {%block right %}
+                  <h4>Bet Slip</h4>
+
+    <form action="" method="post" enctype="multipart/form-data" >
+        Parlay Amt: <input id="parlay_amt" class="bet_amt" type="text" name="parlay_amt"> <br>
+
+{% csrf_token %}
+
+          <table class="table table-striped" id="bet_table"><thead><th>Bet</th><th>Odds</th><th>Amount</th><th>Parlay</th><th>Remove</th></thead>
+            <tbody>
+            {{ bet_formset.management_form }}
+{% for tr in bet_formset%}
+
+             <tr id="{{tr.lbl.id}}"> <td>{{tr.id}} {{tr.bet_cat}}{{tr.status}}{{tr.offer}}{{tr.user}}<b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td>
+                 <td>{{tr.odds}}:1</td> <td><div id="amt-{{tr.lbl.id}}">{{tr.amt}}</div></td><td>{{tr.parlay}}</td><td><img src="{{ STATIC_URL }}img/x.png" class="small remove_bet"></td></tr>
+      {% endfor %}
+            </tbody>
+        </table>
+
+    <input type="submit" id='submit_bet' value="Submit">
+</form>
+
+                      Total Ammount in Betslip:<span id="sum">0</span> <br>
+            Available Balance Remaining:<span id="available">{{account_balance}}</span>
+{% endblock %}
+
+                  </div><!--span left -->
+    </div> <!--row fluid -->
+
+
+
+
+
+
+
+
+{% endblock%}
     </div> <!-- /container -->
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+
     <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+ <script src="{{ STATIC_URL }}js/ajaxfix.js"></script>
+
     <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-    <script src="../assets/js/bootstrap-transition.js"></script>
+
+             <script type="text/javascript">
+
+ $(function(){
+
+$( ".odds_table tbody" ).on( "click", ".add_bet", function() {
+var off_id = $(this).parent().parent().attr('id');
+$.post( '{% url 'app.views.add_to_betslip' %}', { off_id:off_id} ) .done(function( data ) {
+$('#bet_table > tbody:last').append(data);
+});
+});
+
+
+$( "#bet_table tbody" ).on( "click", ".remove_bet", function() {
+var bet_id = $(this).parent().parent().attr('id');
+$(this).parent().parent().remove();
+$.post( '{% url 'app.views.remove_from_betslip' %}', { bet_id:bet_id} ) .done(function( data ) {
+//location.reload();
+//alert(bet_id);
+});
+});
+
+
+
+              $( "#bet_table tbody" ).on( "click", ".parlay", function() {
+              row_id=$(this).parent().parent().attr('id');
+                        var str1 = "#amt-";
+              var str2 = row_id;
+              var res = str1.concat(str2);
+              var ammount=$(res).children(".bet_amt").val(0);
+              calculateSum();
+              $(res).toggle();
+              //document.getElementById(res).remove();
+               //alert(res);
+
+});
+
+ //iterate through each textboxes and add keyup
+        //handler to trigger sum event
+        $(".bet_amt").each(function() {
+
+            $(this).keyup(function(){
+                calculateSum();
+            });
+        });
+
+ function calculateSum() {
+
+        var sum = 0;
+
+
+        //iterate through each textboxes and add the values
+        $(".bet_amt").each(function() {
+
+            //add only if the value is number
+            if(!isNaN(this.value) && this.value.length!=0) {
+                sum += parseFloat(this.value);
+                available={{account_balance}}-sum;
+            }
+        });
+
+
+
+
+        //.toFixed() method will roundoff the final sum to 2 decimal places
+        $("#sum").html(sum.toFixed(2));
+        $("#available").html(available.toFixed(2));
+
+ if(sum>{{account_balance}}) {
+$( "#submit_bet" ).hide();
+ alert("You're betting more than you have");
+}
+
+ if(sum <= {{account_balance}}) {
+$( "#submit_bet" ).show();
+
+}
+
+}
+
+
+
+
+
+
+
+});
+    </script>
+   <!-- <script src="../assets/js/bootstrap-transition.js"></script>
     <script src="../assets/js/bootstrap-alert.js"></script>
     <script src="../assets/js/bootstrap-modal.js"></script>
     <script src="../assets/js/bootstrap-dropdown.js"></script>
@@ -118,15 +280,9 @@
     <script src="../assets/js/bootstrap-button.js"></script>
     <script src="../assets/js/bootstrap-collapse.js"></script>
     <script src="../assets/js/bootstrap-carousel.js"></script>
-    <script src="../assets/js/bootstrap-typeahead.js"></script>
+    <script src="../assets/js/bootstrap-typeahead.js"></script> -->
 
 
-         <script type="text/javascript">
-$( ".add_bet" ).click(function() {
-var off_id = $(this).parent().parent().attr('id');
-alert( off_id );
-});
-    </script>
 
   </body>
 </html>

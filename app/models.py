@@ -14,15 +14,17 @@ class Stage(models.Model):
         (2, 'Pending'),
         (3, 'Completed'),
      )
-    name = models.CharField(max_length=200, default='Overall')
+    name = models.CharField(max_length=200, null=True, blank=True)
     race = models.ForeignKey('Race', null=True, blank=True)
-    stage = models.IntegerField(max_length=3, null=True, blank=True) #0= GC
-    date = models.DateTimeField(verbose_name='Date', auto_now_add=True)
+    distance = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True) #0= GC
+    date = models.DateField(verbose_name='Date', null=True, blank=True)
     rider = models.ManyToManyField('Rider',through='StageRider')
-    team = models.ManyToManyField('Team',through='StageTeam')
-    status = models.IntegerField(max_length=3, null=True, blank=True, choices=BET_STATUS)
+    #team = models.ManyToManyField('Team',through='StageTeam')
+    status = models.IntegerField(max_length=3, null=True, blank=True, choices=BET_STATUS, default=1)
     def __str__(self):
         return self.name
+    class Meta:
+        ordering = ['date']
 
 class StageImage(models.Model):
     img = models.ImageField(upload_to='stage',null=True)
@@ -30,15 +32,36 @@ class StageImage(models.Model):
 
 class Race(models.Model):
     NAT_CHOICES = (
-        ('US', 'USA'),
-        ('UK', 'United Kingdom'),
-        ('IT', 'Italy'),
+        ('au','Australia'),
+        ('be','Belgium'),
+        ('ca','Canada'),
+        ('ch','Switzerland'),
+        ('cn','China'),
+        ('de','Germany'),
+        ('es','Spain'),
+        ('fr','France'),
+        ('it','Italy'),
+        ('ng','Norway'),
+        ('nl','Netherlands'),
+        ('pl','Poland'),
+        ('uk','United Kingdom'),
+        ('us','USA'),
+     )
+    BET_STATUS = (
+        (1, 'Open'),
+        (2, 'Pending'),
+        (3, 'Completed'),
      )
     name = models.CharField(max_length=200)
-    date = models.DateTimeField(verbose_name='Date', auto_now_add=True)
+    start_date = models.DateField(verbose_name='Start Date', null=True, blank=True)
+    end_date = models.DateField(verbose_name='End Date', null=True, blank=True)
     nat = models.CharField(max_length=50, null=True, blank=True, choices=NAT_CHOICES)
+    cat = models.CharField(max_length=50, null=True, blank=True)
+    status = models.IntegerField(max_length=3, null=True, blank=True, choices=BET_STATUS, default=1)
     def __str__(self):
         return self.name
+    class Meta:
+        ordering = ['start_date']
 
 class RaceImage(models.Model):
     img = models.ImageField(upload_to='race',null=True)
@@ -51,8 +74,8 @@ class Rider(models.Model):
         ('IT', 'Italy'),
      )
     name = models.CharField(max_length=200)
-    dob = models.DateTimeField(verbose_name='DOB', null=True, blank=True)
-    team = models.ManyToManyField('Team')
+    dob = models.DateField(verbose_name='DOB', null=True, blank=True)
+    teams = models.ManyToManyField('Team')
     nat = models.CharField(max_length=50, null=True, blank=True, choices=NAT_CHOICES)
     def __str__(self):
         return self.name
@@ -93,8 +116,12 @@ class StageRider(models.Model):
     mtnres = models.BooleanField(null=False, blank=True, choices=RES_CHOICES, default=False)
     sprntres = models.BooleanField(null=False, blank=True, choices=RES_CHOICES, default=False)
     ythres = models.BooleanField(null=False, blank=True, choices=RES_CHOICES, default=False)
-    bets = models.ManyToManyField('Bet')
-
+    #bets = models.ManyToManyField('Bet',null=True,blank=True)
+    def __str__(self):
+        return ','.join([self.stage.race.name, self.stage.name, self.rider.name])
+    class Meta:
+        ordering = ['stage']
+'''
 class StageTeam(models.Model):
     RES_CHOICES = (
         (True, 'W'),
@@ -105,9 +132,27 @@ class StageTeam(models.Model):
     winodds = models.IntegerField(max_length=5, null=True, blank=True)
     winres = models.BooleanField(null=False, blank=True, choices=RES_CHOICES, default=False)
     bets = models.ManyToManyField('Bet')
+'''
 
 class Bet(models.Model):
-      amt = models.FloatField(null=True, blank=True,verbose_name="bet amount mBtC")
-      user = models.ForeignKey(User)
-      paid=models.NullBooleanField(default=False)
-      parlay=models.BooleanField(null=False, blank=False, default=False)
+    BET_STATUS = (
+        (1, 'Open'),
+        (2, 'Submitted'),
+        (3, 'Paid'),
+     )
+    BET_CATS = (
+        ('STAGE', 'Stage Winner'),
+        ('GC', 'General Classification'),
+        ('MTN', 'King of the Mountains'),
+        ('SPRNT', 'Sprinter'),
+        ('YTH', 'Youth'),
+     )
+    amt = models.FloatField(null=True, blank=True,verbose_name="bet amount mBtC")
+    user = models.ForeignKey(User)
+    offer = models.ForeignKey("StageRider")
+    status=models.IntegerField(max_length=1,choices=BET_STATUS,default=1)
+    parlay=models.BooleanField(null=False, blank=False, default=False)
+    bet_cat = models.CharField(null=False, max_length=10,blank = False, choices = BET_CATS)
+    class Meta:
+        unique_together = ("user","status","offer","bet_cat")
+        ordering = ['id']

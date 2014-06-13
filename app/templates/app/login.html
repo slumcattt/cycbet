@@ -1,18 +1,28 @@
 
                {% extends "app/base.html" %}
 {% load staticfiles %}
+                     {%block uppernav %} {%endblock %}
+{%block content %}
+{%block middle%}
 
-{%block content%}
 
-
-      <form class="form-signin">
+    <form class="form-signin" role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+{% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Email address">
-        <input type="password" class="input-block-level" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+<table><tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+       <button class="btn btn-lg btn-primary btn-block" type="submit" value="login">Log in</button>
+<input type="hidden" name="next" value="{% url 'app.views.index' %}" />
       </form>
 
               {% endblock %}
+
+                       {%block right %}{%endblock%}
+                       {%endblock%}

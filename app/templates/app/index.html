@@ -1,61 +1,18 @@
         {% extends "app/base.html" %}
 {% load staticfiles %}
 
-{%block content%}
+{%block middle%}
+     <h2>Upcoming Stages</h2>
 
 
-
-
-              <div class="row-fluid">
-    <div class="span2">
-
-        <a class="brand" href="{% url 'app.views.index' %}"><img src="{{ STATIC_URL }}img/bike.png" class="med mid"></a>
- {% if races %}
-        <h4>Races</h4>     <ul class="nav nav-tabs nav-stacked">
-     {% for r in races %}
-              <li> <a href="{% url 'app.views.race' r.id%}"> {{r.name}}</a></li>
-                {% endfor %}</ul>
-        {% endif %}
-         {% if stages %}
-        <h4>Stages</h4>   <ul class="nav nav-tabs nav-stacked"> {% for s in stages %}
-                <li> <a href="{% url 'app.views.stage' s.id%}">  {{s.name}}</a></li>
-                {% endfor %}
-    </ul>
-    {% endif %}
-
-    </div><!--span left -->
-    <div class="span8">
-      {% if race %}  <h2>{{race.name}}</h2> {% endif %}
-         {% if stage %}  <h4>Stage {{stage.stage}} - {{stage.name}}</h4>
-
-
-        <table><thead><th>Rider</th><th>Team</th><th>Odds</th></thead>
+           <table class="table table-striped"><thead><th>Date</th><th>Race</th><th>Stage</th></thead>
             <tbody>
-            {% for r in stage_riders %}
-            <tr id="{{r.id}}"><td>{{r.name}}</td><td>{{r.team}}</td><td>{{r.gcodds}}</td><td><img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td></tr>
+             {% for u in ustages %}
+            <tr><td><a href="{% url 'app.views.stage' u.id%}">{{u.date}}</a></td><td>{{u.race}}</td><td>{{u.name}}</td></tr>
             {% endfor %}
 
-            <tr id="1"><td>{{r.name}}</td><td>{{r.team}}</td><td>{{r.gcodds}}</td><td><img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td></tr>
+
             </tbody>
         </table>
 
-        {% endif %}
-
-
-
-
-    </div><!--span main -->
-                  <div class="span2"><h4>Bet Slip</h4>
-
-
-        <form method="Post">
-{% csrf_token %}
-    <input type="submit" value="Submit">
-</form>
-
-
-                  </div><!--span left -->
-    </div> <!--row fluid -->
-
-
-{% endblock %}
+{%endblock%}

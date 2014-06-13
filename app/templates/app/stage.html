@@ -1,0 +1,26 @@
+        {% extends "app/base.html" %}
+{% load staticfiles %}
+
+
+        {%block middle%}
+        <h2>{{race.name}}</h2>
+         <h4>{{stage.name}}</h4>
+<hr>
+
+        <form method='POST' >
+{% csrf_token %}
+<h4>Stage Winner</h4>
+       <table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> {%if logged_in %}<th>Add to Betslip</th>{%endif%}</thead>
+            <tbody>
+       {{ odds_formset.management_form }}
+      {% for tr in odds_formset %}
+   <tr id="{{tr.lbl.id}}_STAGE"> <td>{{tr.id}}{{tr.status}} {{ tr.lbl.rider.name}}</a></td> <td>{{tr.team}}</td><td>{{tr.odds}}:1</td><td>{%if logged_in %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet">{%endif%}</td></tr>
+      {% endfor %}
+            </tbody>
+        </table>
+
+
+</form>
+
+
+{% endblock %}

@@ -4,5 +4,5 @@ from django.contrib import admin
 from app.models import *
 
 
-admin.site.register([Bet,StageTeam,StageRider,TeamImage,Team,RiderImage,Rider,RaceImage,Race,StageImage,Stage])
+admin.site.register([Bet,StageRider,TeamImage,Team,RiderImage,Rider,RaceImage,Race,StageImage,Stage])
 

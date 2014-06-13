@@ -1,0 +1,72 @@
+
+
+
+               {% extends "app/base.html" %}
+{% load staticfiles %}
+
+{%block content%}
+
+
+
+             <h2>Account</h2> {% if logged_in %}
+                                 <h4>Account Name: {{user}} </h4>
+                    <h4>Account Balance (mBtC): {{account_balance}} </h4>
+                 <hr>
+                 <div class="col-md-6">
+                           <h4>Account Addresses:</h4>
+                     <table class="table table-striped">
+
+                   <tbody>
+                    {% for a in account_address %}
+                    <tr><td>{{a}} </td></tr>
+                    {% endfor%}
+                    </tbody></table>
+                    <form method="POST" action="{% url 'myapp.views.get_new_address' %}">
+                    {% csrf_token %}
+  <button type="submit" class="btn btn-default">Get New Address</button>
+  </form>
+  <small>Deposit to one of these addresses</small>
+
+                 </div>
+
+
+                               <div class="col-md-6">
+                    <h4>Withdraw Funds</h4>
+                                      <form method="POST" action="{% url 'myapp.views.withdraw' %}" style="background-color:rgb(249, 249, 249)">
+                    {% csrf_token %}
+
+
+                            <div class="form-group">
+    <label>Send to address</label>
+    <input input type="text" name="to_address" class="form-control" >
+  </div>
+  <div class="form-group">
+    <label>Amount (mBtC)</label>
+    <input input type="text" name="amt" class="form-control">
+  </div>
+  <div class="form-group">
+    <label>Comment (optional)</label>
+    <input input type="text" name="cmt" class="form-control">
+  </div>
+
+
+  <button type="submit" class="btn btn-default">Withdraw</button>
+  </form>
+
+                     <hr>
+
+
+                        <h4>Delete Account</h4>
+                                      <form method="POST" action="{% url 'myapp.views.delete_acct' %}">
+                    {% csrf_token %}
+  <button type="submit" class="btn btn-default">Delete Account</button>
+  </form>
+                             </div> </div>
+                          {%endif%}
+
+
+
+
+                  {%endblock %}
+
+
