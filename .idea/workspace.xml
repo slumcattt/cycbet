@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f4e8ed77-e04b-400f-a9e1-e1a1ba7fb86a" name="Default" comment="">
       <change type="DELETED" beforePath="C:\Users\Aiden\Desktop\cyc_bet\app\templates\sql.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cyc_bet/settings.py" afterPath="$PROJECT_DIR$/cyc_bet/settings.py" />
     </list>
     <ignored path="cyc_bet.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,18 +26,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="forms.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/forms.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.72" vertical-offset="15" max-vertical-offset="578">
-              <caret line="24" column="15" selection-start-line="24" selection-start-column="15" selection-end-line="24" selection-end-column="15" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="sql.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/sql.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -69,14 +58,34 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3427065" vertical-offset="2100" max-vertical-offset="3757">
+            <state vertical-scroll-proportion="-7.8" vertical-offset="2100" max-vertical-offset="3757">
               <caret line="135" column="54" selection-start-line="135" selection-start-column="15" selection-end-line="135" selection-end-column="54" />
               <folding>
                 <element signature="e#0#45#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="requirements.txt" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/requirements.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="289">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settings.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cyc_bet/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.23367697" vertical-offset="1207" max-vertical-offset="2091">
+              <caret line="80" column="4" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="4" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -136,7 +145,6 @@
       <list>
         <option value="$PROJECT_DIR$/app/static/js/jquery.min.js" />
         <option value="$PROJECT_DIR$/cyc_bet/urls.py" />
-        <option value="$PROJECT_DIR$/cyc_bet/settings.py" />
         <option value="$PROJECT_DIR$/app/templates/app/sql.py" />
         <option value="$PROJECT_DIR$/app/templates/sql.py" />
         <option value="$PROJECT_DIR$/app/static/sql.py" />
@@ -154,6 +162,7 @@
         <option value="$PROJECT_DIR$/app/templates/app/base.html" />
         <option value="$PROJECT_DIR$/app/static/js/ajaxfix.js" />
         <option value="$PROJECT_DIR$/app/views.py" />
+        <option value="$PROJECT_DIR$/cyc_bet/settings.py" />
       </list>
     </option>
   </component>
@@ -580,16 +589,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cyc_bet/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-34.0" vertical-offset="391" max-vertical-offset="2108">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding>
-            <element signature="e#318#328#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/templates/app/account.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-45.115383" vertical-offset="0" max-vertical-offset="1326">
@@ -712,11 +711,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3427065" vertical-offset="2100" max-vertical-offset="3757">
+        <state vertical-scroll-proportion="-7.8" vertical-offset="2100" max-vertical-offset="3757">
           <caret line="135" column="54" selection-start-line="135" selection-start-column="15" selection-end-line="135" selection-end-column="54" />
           <folding>
             <element signature="e#0#45#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="607">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cyc_bet/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.23367697" vertical-offset="1207" max-vertical-offset="2091">
+          <caret line="80" column="4" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
