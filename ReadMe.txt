@@ -213,14 +213,14 @@ port = '80' or '443' for ssl
 
 set a second password - done on website, but apparently need to do this using
 
-c.setwalletpassphrase('passphrase',TIMEINSECONDS can't be more than 3600)
+c.walletpassphrase('passphrase',TIMEINSECONDS can't be more than 3600)
 
 also, from bash shell
 $heroku python manage.py syncdb (shell, etc)
 
 to delete the heroku posgre database:
 
-1. delete from app webpage terminal
+1. delete database from app webpage terminal (make sure you applied changes, so that no db remains)
 2. in bash: $heroku addons:add heroku-postgresql
 3. push and run
 4. heroku run python manage.py syncdb
@@ -230,5 +230,17 @@ icons - https://www.iconfinder.com/iconsets/flat-ui-icons-24-px
 
 pip install beautifulsoup4
 (added to requirements, for scraping from procyclingstats - for sql.py)
+===========
+c.getnewaddress('account') - will set a first or subsequent addresses for a user, will also set account for user if no account
+----
+above requires me to set the bitcoin password:
+c.walletpassphrase('Lucky#101',TIMEINSECONDS can't be more than 24hrs)
+----
+c.move('fromaccount','toaccount',ammt)
+-----
+c.getbalance('account')
+
+
+c.getaddresses
 
 

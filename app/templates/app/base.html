@@ -55,6 +55,14 @@
 
         .bet_amt{width:25px}
 
+            .table-div {
+        max-height: 500px;
+        width:100%;
+        overflow-x: scroll;
+        overflow-y: scroll;
+    }
+        tr.header{background-color: #f9f9f9; font-weight:bold;}
+
 
     </style>
 
@@ -92,13 +100,18 @@
                 {% endfor %}
             </ul>
 
-         {%if logged_in %}
+         {%if user.is_authenticated %}
      <ul class="nav navbar-nav navbar-right">
+         <li><a href="{% url 'app.views.account' %}">Account</a></li>
       <li><a>Funds: {{ account_balance }} mBtC</a></li>
-      <li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li></ul>
+      <li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
+     </ul>
       {% else %}
           <ul class="nav navbar-nav navbar-right">
-      <li><a href="{% url 'django.contrib.auth.views.login' %}">Log in</a></li></ul>
+      <li><a href="{% url 'django.contrib.auth.views.login' %}">Log in</a></li>
+              <li><a href="{% url 'app.views.register' %}">Register</a></li>
+          </ul>
+
       {% endif %}
 {%endblock %}
           </div><!--/.nav-collapse -->
@@ -135,19 +148,22 @@
                   <div class="span4">
 
                       {%block right %}
+                      {% if user.is_authenticated %}
                   <h4>Bet Slip</h4>
 
     <form action="" method="post" enctype="multipart/form-data" >
-        Parlay Amt: <input id="parlay_amt" class="bet_amt" type="text" name="parlay_amt"> <br>
-
+       {{pform.as_p}}
+<hr>
 {% csrf_token %}
 
           <table class="table table-striped" id="bet_table"><thead><th>Bet</th><th>Odds</th><th>Amount</th><th>Parlay</th><th>Remove</th></thead>
             <tbody>
-            {{ bet_formset.management_form }}
+
+         {{bet_formset.management_form}}
+
 {% for tr in bet_formset%}
 
-             <tr id="{{tr.lbl.id}}"> <td>{{tr.id}} {{tr.bet_cat}}{{tr.status}}{{tr.offer}}{{tr.user}}<b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td>
+             <tr id="{{tr.lbl.id}}"> <td> {{tr.id}} {{tr.bet_cat}}{{tr.status}}{{tr.offer}}{{tr.user}}<b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td>
                  <td>{{tr.odds}}:1</td> <td><div id="amt-{{tr.lbl.id}}">{{tr.amt}}</div></td><td>{{tr.parlay}}</td><td><img src="{{ STATIC_URL }}img/x.png" class="small remove_bet"></td></tr>
       {% endfor %}
             </tbody>
@@ -158,6 +174,10 @@
 
                       Total Ammount in Betslip:<span id="sum">0</span> <br>
             Available Balance Remaining:<span id="available">{{account_balance}}</span>
+
+                      {%else%}
+                     <h4> <a href="{% url 'django.contrib.auth.views.login' %}" >Log in to Bet</a></h4>
+                      {%endif%}
 {% endblock %}
 
                   </div><!--span left -->
@@ -188,18 +208,18 @@
 
 $( ".odds_table tbody" ).on( "click", ".add_bet", function() {
 var off_id = $(this).parent().parent().attr('id');
-$.post( '{% url 'app.views.add_to_betslip' %}', { off_id:off_id} ) .done(function( data ) {
-$('#bet_table > tbody:last').append(data);
+$.post( '{% url 'app.views.add_to_betslip' %}', { off_id:off_id} )
+.done(function( data ) {
+$('#bet_table > tbody').html(data);
 });
 });
 
 
 $( "#bet_table tbody" ).on( "click", ".remove_bet", function() {
 var bet_id = $(this).parent().parent().attr('id');
-$(this).parent().parent().remove();
+//$(this).parent().parent().remove();
 $.post( '{% url 'app.views.remove_from_betslip' %}', { bet_id:bet_id} ) .done(function( data ) {
-//location.reload();
-//alert(bet_id);
+$('#bet_table > tbody').html(data);
 });
 });
 
@@ -221,7 +241,6 @@ $.post( '{% url 'app.views.remove_from_betslip' %}', { bet_id:bet_id} ) .done(fu
  //iterate through each textboxes and add keyup
         //handler to trigger sum event
         $(".bet_amt").each(function() {
-
             $(this).keyup(function(){
                 calculateSum();
             });
@@ -261,9 +280,15 @@ $( "#submit_bet" ).show();
 
 }
 
+ $("tr.child").hide();
+
+   $("tr.header").click(function () {
+      $("tr.child", $(this).parent()).slideToggle("fast");
+ $(this).children('td').children('img').toggle();
 
 
 
+});
 
 
 

@@ -1,0 +1,20 @@
+
+               {% extends "app/base.html" %}
+{% load staticfiles %}
+                     {%block uppernav %} {%endblock %}
+{%block content %}
+{%block middle%}
+
+
+    <form class="form-signin" role="form" method="post" action="">
+        <h4>Register</h4>
+{% csrf_token %}
+{{reg_form}}<br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+
+      </form>
+
+              {% endblock %}
+
+                       {%block right %}{%endblock%}
+                       {%endblock%}

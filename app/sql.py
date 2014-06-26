@@ -41,7 +41,8 @@ def stageraces():
             if startlist=='Startlist':
                 raceObj = Race.objects.get_or_create(name=race,start_date=start_date,end_date=end_date,cat=cat,nat=nat)[0]
             else:
-                raceObj = Race.objects.get_or_create(name=race,start_date=start_date,end_date=end_date,cat=cat,nat=nat, status=3)[0]
+                pass
+                #raceObj = Race.objects.get_or_create(name=race,start_date=start_date,end_date=end_date,cat=cat,nat=nat, status=3)[0]
         else:
             start_date = date
             day = int(date.split('.')[0])
@@ -50,7 +51,8 @@ def stageraces():
             if startlist=='Startlist':
                 raceObj = Race.objects.get_or_create(name=race,start_date=date,end_date=date,cat=cat,nat=nat)[0]
             else:
-                raceObj = Race.objects.get_or_create(name=race,start_date=date,end_date=date,cat=cat,nat=nat, status=3)[0]
+                pass
+                #raceObj = Race.objects.get_or_create(name=race,start_date=date,end_date=date,cat=cat,nat=nat, status=3)[0]
         race_url = cols[1].a['href']
         seq = (base_url,race_url) # This is sequence of strings.
         full_race_url = str.join( seq )
@@ -78,6 +80,8 @@ def stageraces():
                 distance = cols2[5].string
                 stageObj = Stage.objects.get_or_create(name=name,race=raceObj,distance=distance,date=date)[0]
         else:
+            pass
+            '''
             race_url = cols[1].a['href']
             seq = (base_url,race_url) # This is sequence of strings.
             full_race_url = str.join( seq )
@@ -100,6 +104,9 @@ def stageraces():
                     name=raceObj.name
                 distance = cols2[5].string
                 stageObj = Stage.objects.get_or_create(name=name,race=raceObj,distance=distance,date=date,status=3)[0]
+            '''
+
+
 def teams():
     team_page = urllib.urlopen('http://www.procyclingstats.com/teams/Teams-2014-WorldTour')
     tsoup = BeautifulSoup(team_page)
@@ -159,9 +166,13 @@ def racelist():
         str2= "-"
         cols = row.findAll('td')
         startlist = cols[2].a.string
+        '''
         race = latin1_to_ascii(cols[1].a.string) #un-euro the text
         raceObj=Race.objects.get_or_create(name=race)[0]
+        '''
         if startlist=='Startlist':
+            race = latin1_to_ascii(cols[1].a.string) #un-euro the text
+            raceObj=Race.objects.get_or_create(name=race)[0]
             startlist_url = cols[2].a['href']
             seq = (base_url,startlist_url) # This is sequence of strings.
             full_startlist_url = str.join( seq )
@@ -189,12 +200,26 @@ def delete_gc_stages():
                 b.delete()
             r.delete()
         s.delete()
-
+def fakeodds():
+    offers=StageRider.objects.filter(stage_id=72)
+    for o in offers:
+        w=random.randint(1, 20)
+        g=random.randint(1, 20)
+        s=random.randint(1, 20)
+        m=random.randint(1, 20)
+        y=random.randint(1, 20)
+        o.winodds=w
+        o.gcodds=g
+        o.sprntodds=s
+        o.mtnodds=m
+        o.ythodds=y
+        o.save()
 
 def doit():
     stageraces()
     teams()
     racelist()
+    #fakeodds()
 
 
 

@@ -18,47 +18,47 @@
  <h2>{{race.name}}</h2>
 <hr>
 <h4>GC Winner</h4>
-       <table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if logged_in %}Add to Betslip</th>{%endif%}</thead>
+       <div class=table-div><table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if user.is_authenticated %}Add to Betslip</th>{%endif%}</thead>
             <tbody>
             {% for r in gc_riders %}
-            <tr id="{{r.id}}_GC"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.gcodds}}:1</td>  <td>{%if logged_in %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
+            <tr id="{{r.id}}_GC"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.gcodds}}:1</td>  <td>{%if user.is_authenticated %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
             {% endfor %}
             </tbody>
-        </table>
+        </table></div>
         <hr>
 <h4>King of the Mountains</h4>
-       <table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if logged_in %}Add to Betslip</th>{%endif%}</thead>
+       <div class=table-div><table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if user.is_authenticated %}Add to Betslip</th>{%endif%}</thead>
             <tbody>
             {% for r in mtn_riders %}
-            <tr id="{{r.id}}_MTN"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.mtnodds}}:1</td> <td>{%if logged_in %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
+            <tr id="{{r.id}}_MTN"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.mtnodds}}:1</td> <td>{%if user.is_authenticated %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
             {% endfor %}
             </tbody>
-        </table>
+        </table></div>
                 <hr>
 <h4>Sprinter</h4>
-       <table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th><th>{%if logged_in %}Add to Betslip</th>{%endif%}</thead>
+       <div class=table-div><table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th><th>{%if user.is_authenticated %}Add to Betslip</th>{%endif%}</thead>
             <tbody>
             {% for r in sprnt_riders %}
-            <tr id="{{r.id}}_SPRNT"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.sprntodds}}:1</td> <td>{%if logged_in %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
+            <tr id="{{r.id}}_SPRNT"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.sprntodds}}:1</td> <td>{%if user.is_authenticated %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
             {% endfor %}
             </tbody>
-        </table>
+        </table></div>
                 <hr>
 <h4>Young Rider</h4>
-       <table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if logged_in %}Add to Betslip</th>{%endif%}</thead>
+       <div class=table-div><table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if user.is_authenticated %}Add to Betslip</th>{%endif%}</thead>
             <tbody>
             {% for r in yth_riders %}
-            <tr id="{{r.id}}_YTH"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.ythodds}}:1</td> <td>{%if logged_in %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
+            <tr id="{{r.id}}_YTH"><td>{{r.rider.name}}</td><td>{{r.team}}</td><td>{{r.ythodds}}:1</td> <td>{%if user.is_authenticated %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet"></td>{%endif%}</tr>
             {% endfor %}
             </tbody>
-        </table>
+        </table></div>
 
 <hr>
 
      <h2>{{race.name}} Stages</h2>
 
 
-           <table class="table table-striped"><thead><th>Date</th><th>Stage</th><th>Distance</th></thead>
+           <div class=table-div><table class="table table-striped"><thead><th>Date</th><th>Stage</th><th>Distance</th></thead>
             <tbody>
              {% for s in stages %}
             <tr><td><a href ="{% url 'app.views.stage' s.id%}">{{s.date}}</a></td><td>{{s.name}}</td><td>{{s.distance}}</td></tr>
@@ -66,7 +66,7 @@
 
 
             </tbody>
-        </table>
+        </table></div>
 
 
 
