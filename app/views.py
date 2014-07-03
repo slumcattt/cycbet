@@ -72,9 +72,9 @@ def race(request, race_id=None):
     races=Race.objects.filter(status=1,start_date__lt=datetime.date.today() + timedelta(days=30))
     race=None
     stages=None
-    if race_id:
+    if Race.objects.get(id=race_id).status==1:
         race=Race.objects.get(id=race_id)
-        stages=Stage.objects.filter(race_id=race_id).exclude(name__in=['General Classification',race.name])
+        stages=Stage.objects.filter(race_id=race_id,date__gt=datetime.date.today()).exclude(name__in=['General Classification',race.name])
         overall = Stage.objects.get(race=race,name='General Classification')
         gc_riders=StageRider.objects.filter(stage=overall,gcodds__gt=0)
         for s in range(len(gc_riders)):
@@ -110,6 +110,8 @@ def race(request, race_id=None):
                                 form['id'].parlay_bet = parlay
                             form['id'].save()
                     (bet_formset, bet_queryset, t, c) = make_bet_table(request.user)
+    else:
+        return redirect('app.views.index')#make a custom 404 for this- bet over
     return render(request, 'app/race.html', locals())
 
 def stage(request, stage_id=None):
@@ -118,10 +120,10 @@ def stage(request, stage_id=None):
     stage=None
     stages=None
     stage_riders=None
-    if stage_id:
+    if Stage.objects.get(id=stage_id).status==1:
         stage=Stage.objects.get(id=stage_id)
         race=stage.race
-        stages=Stage.objects.filter(race_id=race.id).exclude(name__in=['General Classification',race.name])
+        stages=Stage.objects.filter(race_id=race.id,date__gt=datetime.date.today()).exclude(name__in=['General Classification',race.name])
         stage_riders=StageRider.objects.filter(stage=stage, winodds__gt=0)
         odds_formset = OddsFormset(queryset=stage_riders)
         for b in range(len(odds_formset)):
@@ -150,6 +152,8 @@ def stage(request, stage_id=None):
                                 form['id'].parlay_bet = parlay
                             form['id'].save()
                     (bet_formset, bet_queryset, t, c) = make_bet_table(request.user)
+    else:
+        return redirect('app.views.index')#make a custom 404 for this- bet over
     return render(request, 'app/stage.html',locals())
 
 #@csrf_exempt

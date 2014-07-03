@@ -7,7 +7,7 @@
 
 
         <h4>Stages</h4>   <ul class="nav nav-tabs nav-stacked"> {% for s in stages %}
-                <li> <a href="{% url 'app.views.stage' s.id%}">  {{s.name}}</a></li>
+                <li> <a href="{% url 'app.views.stage' s.id%}">  {{s.name}} - {{s.date}}</a></li>
                 {% endfor %}
     </ul>
 
@@ -15,7 +15,7 @@
 
 
 {%block middle%}
- <h2>{{race.name}}</h2>
+ <h2>{{race.name}} - {{race.start_date}} > {{race.end_date}}</h2>
 <hr>
 <h4>GC Winner</h4>
        <div class=table-div><table class="table table-striped odds_table"><thead><th>Rider</th><th>Team</th><th>Odds</th> <th>{%if user.is_authenticated %}Add to Betslip</th>{%endif%}</thead>

@@ -7,6 +7,10 @@ import datetime, random
 
 from bs4 import BeautifulSoup
 import urllib
+
+import bitcoinrpc as b
+#c=b.connect_to_remote('aiden','Peyton18','107.170.92.113',8332)
+conn = b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','rpc.blockchain.info','80')
 '''
 for race
 open startlist soup
@@ -41,7 +45,7 @@ def stageraces():
             if startlist=='Startlist':
                 raceObj = Race.objects.get_or_create(name=race,start_date=start_date,end_date=end_date,cat=cat,nat=nat)[0]
             else:
-                pass
+                pass #IGNORE PAST RACES
                 #raceObj = Race.objects.get_or_create(name=race,start_date=start_date,end_date=end_date,cat=cat,nat=nat, status=3)[0]
         else:
             start_date = date
@@ -51,11 +55,12 @@ def stageraces():
             if startlist=='Startlist':
                 raceObj = Race.objects.get_or_create(name=race,start_date=date,end_date=date,cat=cat,nat=nat)[0]
             else:
-                pass
+                pass #IGNORE PAST RACES
                 #raceObj = Race.objects.get_or_create(name=race,start_date=date,end_date=date,cat=cat,nat=nat, status=3)[0]
         race_url = cols[1].a['href']
         seq = (base_url,race_url) # This is sequence of strings.
         full_race_url = str.join( seq )
+        #GET STAGES FOR RACES
         if startlist=='Startlist':
             race_url = cols[1].a['href']
             seq = (base_url,race_url) # This is sequence of strings.
@@ -80,7 +85,7 @@ def stageraces():
                 distance = cols2[5].string
                 stageObj = Stage.objects.get_or_create(name=name,race=raceObj,distance=distance,date=date)[0]
         else:
-            pass
+            pass #IGNORE OLD RACES
             '''
             race_url = cols[1].a['href']
             seq = (base_url,race_url) # This is sequence of strings.
@@ -189,17 +194,109 @@ def racelist():
                             for s in Stage.objects.filter(race=raceObj):
                                 stageRider = StageRider.objects.get_or_create(stage=s,rider=riderObj)
 
-#Yeah, don't do this
-def delete_gc_stages():
-    stages = Stage.objects.filter(name='General Classification')
-    for s in stages:
-        riders = StageRider.objects.filter(stage=s)
-        for r in riders:
-            bets=Bet.objects.filter(offer=r)
-            for b in bets:
-                b.delete()
-            r.delete()
-        s.delete()
+
+def doit():
+    stageraces()
+    teams()
+    racelist()
+    #fakeodds()
+
+def payit():
+    bet_pay()
+    parlay_pay()
+
+
+def bet_pay():
+    #SET TODAYS STAGE TO PENDING (CANNOT BET ON ANYMORE
+    todays_stages=Stage.objects.filter(date=datetime.date.today())
+    todays_stages.status=2
+    #SELECT STAGES WHERE A WINNER IS MARKED OFF, PAYOUT SIGLE BETS ON THESE MARK PARLAY BETS AS
+    offers=StageRider.objects.filter(stage__status=1)#Exclude open bets and closed - change to =2
+    status_change_stage=None #For changing offers
+    status_change_stages=[]
+    for o in offers:
+        betset=o.bet_set.filter(status=2) #get all submitted bets for a stage-rider
+        for b in betset:
+            status_change_stage,status_change_stages=make_bet_results(o.winodds, o.winres, o,status_change_stage,status_change_stages,b,'STAGE')
+            status_change_stage,status_change_stages=make_bet_results(o.gcodds, o.gcres, o,status_change_stage,status_change_stages,b,'GC')
+            status_change_stage,status_change_stages=make_bet_results(o.mtnodds, o.mtnres, o,status_change_stage,status_change_stages,b,'MTN')
+            status_change_stage,status_change_stages=make_bet_results(o.sprntodds, o.sprntres, o,status_change_stage,status_change_stages,b,'SPRNT')
+            status_change_stage,status_change_stages=make_bet_results(o.ythodds, o.ythres, o,status_change_stage,status_change_stages,b,'YTH')
+    for s in status_change_stages:
+        s.status=3 #set the stage to completed wherever results were posted
+        #s.save()
+        print s
+
+
+def make_bet_results(odds, res, o,status_change_stage,status_change_stages,b,bet_cat):
+    if odds and res:
+        #Following if/else builds array of stages that are paid out
+        if status_change_stage==o.stage:
+            pass
+        else:
+            status_change_stage=o.stage
+            status_change_stages.append(o.stage)
+            settled_bets=o.bet_set.filter(status=2)
+            #if there is a winner selected for a category, set all the bets to completed
+            for sb in settled_bets:
+                sb.status=3
+                #sb.save()
+        if b.bet_cat==bet_cat and b.parlay==False:
+            pay_amt=b.amt*odds
+            #PAYOUT HERE
+            print b.amt, b.user, b.status
+    return status_change_stage,status_change_stages
+
+
+def parlay_pay():
+    open_parlays=Parlay.objects.all().exclude(status=3)
+    for op in open_parlays:
+        pay=True
+        winning_parlay_odds=[]
+        open_parlay_bets=op.bet_set.all()
+        for opb in open_parlay_bets:
+            #if bet still open
+            if opb.status !=3:
+                pay=False
+                print 'bet still open',op.id, opb.id
+            #if bet closed, but lost
+            elif (opb.bet_cat=='STAGE' and not opb.offer.winres) or (opb.bet_cat=='GC' and not opb.offer.gcres) or (opb.bet_cat=='MTN'
+                    and not opb.offer.mtnres) or (opb.bet_cat=='SPRNT' and not opb.offer.sprntres) or (opb.bet_cat=='YTH' and not opb.offer.ythres):
+                op.status=3
+                #op.save()
+                pay=False
+            else:
+                #append the willing parlay bet thing
+                if opb.bet_cat=='STAGE':
+                    winning_parlay_odds.append(opb.offer.winodds)
+                elif opb.bet_cat=='GC':
+                    winning_parlay_odds.append(opb.offer.gcodds)
+                elif opb.bet_cat=='MTN':
+                    winning_parlay_odds.append(opb.offer.mtnodds)
+                elif opb.bet_cat=='SPRNT':
+                    winning_parlay_odds.append(opb.offer.sprntodds)
+                elif opb.bet_cat=='YTH':
+                    winning_parlay_odds.append(opb.offer.ythodds)
+        if pay:
+            tot_odds=1
+            for wpo in winning_parlay_odds:
+                tot_odds=tot_odds*wpo
+            tot_amt=tot_odds*op.amt if op.amt else None
+            op.status=3
+            #op.save()
+            #PAYOUT HERE
+            print tot_amt,tot_amt
+
+
+
+'''
+    BET_STATUS = (
+        (1, 'Open'),
+        (2, 'Pending'),
+        (3, 'Completed'),
+     )
+'''
+'''
 def fakeodds():
     offers=StageRider.objects.filter(stage_id=72)
     for o in offers:
@@ -214,16 +311,7 @@ def fakeodds():
         o.mtnodds=m
         o.ythodds=y
         o.save()
-
-def doit():
-    stageraces()
-    teams()
-    racelist()
-    #fakeodds()
-
-
-
-
+'''
 
 def latin1_to_ascii(unicrap_string):
     """This replaces UNICODE Latin-1 characters with
@@ -270,65 +358,3 @@ def latin1_to_ascii(unicrap_string):
     return r
 
 
-'''
-def dictfetchall(cursor):
-    "Returns all rows from a cursor as a dict"
-    desc = cursor.description
-    return [
-        dict(zip([col[0] for col in desc], row))
-        for row in cursor.fetchall()
-    ]
-
-def fake_data():
-    mkpjstskslstnrs()
-    #RELATING TABLES==============================================================================================
-    #MANY TO MANY the Projects and Tasks through ProjectTask table
-    projtasks()
-    #MANY TO MANY (no thru table) listeners - visits, projects - visits
-    many2many()
-
-def mkpjstskslstnrs():
-    p1=Project.objects.get_or_create(name='First Project',leader_id=User.objects.get(id=1).id,deadline=datetime.date.today(),overall_priority=2)
-    p2=Project.objects.get_or_create(name='Second Project',leader_id=User.objects.get(id=1).id,deadline=datetime.date.today(),overall_priority=3)
-    p3=Project.objects.get_or_create(name='Third Project',leader_id=User.objects.get(id=1).id,deadline=datetime.date(2012,02,01),overall_priority=2)
-    p4=Project.objects.get_or_create(name='Fourth Project',leader_id=User.objects.get(id=1).id,deadline=datetime.date(2029,02,01),overall_priority=4)
-    p1.save()
-    p2.save()
-    p3.save()
-    p4.save()
-    #Create Various Tasks===========
-    t1=Task.objects.get_or_create(name='Play')
-    t2=Task.objects.get_or_create(name='Talk')
-    t3=Task.objects.get_or_create(name='Sleep')
-    t4=Task.objects.get_or_create(name='Lunch')
-    t1.save()
-    t2.save()
-    t3.save()
-    t4.save()
-    name_list=['Tom','Mary','SharkBoy','ManateeMan','-___-']
-    for i in name_list:
-        #Yeah, this S1, S2 stuff doesn't do what I thought but whatever
-        sr=random.randint(1, 2)
-        rr=random.randint(1, 6)
-        er=random.randint(1, 2)
-        sx='S'+str(sr)
-        et='E'+str(rr)
-        ra='R'+str(er)
-        l = Listener(name=i,race=ra,eth=et,sex=sx,visit=Visit.objects.get(id=random.randint(1, 60)))
-        l.save()
-
-def projtasks():
-    for i in Project.objects.all():
-        for j in Task.objects.all():
-            pri=random.randint(1,4)
-            pt=ProjectTask(project=i, task=j, priority=pri)
-            pt.save()
-
-def many2many():
-    pjs=Project.objects.all()
-    for pj in pjs:
-        r1=random.randint(1,200)
-        r2=random.randint(1,200)
-        pj.visits.add(Visit.objects.get(id=r1),Visit.objects.get(id=r2))
-        pj.save()
-'''
