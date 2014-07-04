@@ -44,8 +44,12 @@ class Parlays(ModelForm):
 
 class UserCreateForm(UserCreationForm):
     email = forms.EmailField(required=True)
-
     class Meta:
         model = User
         fields = ( "username", "email" )
+
+
+
+class StageDropdown(forms.Form):
+    stage_select = forms.ModelChoiceField(queryset = Stage.objects.order_by('id'))
 

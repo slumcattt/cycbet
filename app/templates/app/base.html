@@ -206,6 +206,16 @@
 
  $(function(){
 
+ alert('dssdsd');
+    $('#id_stage_select').change(function(){
+            var stage_id = $(this).val();
+            //window.location="{% url 'app.views.set_odds' 9999999 %}".replace('9999999', stage_id);
+alert(stage_id);
+
+        });
+
+
+
 $( ".odds_table tbody" ).on( "click", ".add_bet", function() {
 var off_id = $(this).parent().parent().attr('id');
 $.post( '{% url 'app.views.add_to_betslip' %}', { off_id:off_id} )
@@ -286,9 +296,10 @@ $( "#submit_bet" ).show();
     $(this).nextUntil('tr.header').slideToggle('fast');
  $(this).children('td').children('img').toggle();
 
-
-
 });
+
+
+
 
 
 

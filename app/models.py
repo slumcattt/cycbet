@@ -22,7 +22,9 @@ class Stage(models.Model):
     #team = models.ManyToManyField('Team',through='StageTeam')
     status = models.IntegerField(max_length=3, null=True, blank=True, choices=BET_STATUS, default=1)
     def __str__(self):
-        return self.name
+        name_seq=(self.race.name,self.name)
+        name_str=(',').join(name_seq)
+        return name_str #self.name
     class Meta:
         ordering = ['date']
 

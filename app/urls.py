@@ -15,4 +15,6 @@ urlpatterns = patterns('app.views',
     url(r'^get_new_address', 'get_new_address'),
     url(r'^withdraw', 'withdraw'),
     url(r'^delete_acct', 'delete_acct'),
+    url(r'^set_odds/$','set_odds'),
+    url(r'^set_odds/(?P<stage_id>\d+)/$', 'set_odds'),
     )

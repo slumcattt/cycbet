@@ -16,6 +16,7 @@ from django.forms.models import modelformset_factory
 OddsFormset = modelformset_factory(StageRider, form=Odds, extra=0, max_num=1)
 BetFormset = modelformset_factory(Bet, form=Bets, extra=0, max_num=1)
 
+
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.contrib.auth.models import User
 
@@ -326,12 +327,25 @@ def withdraw(request):
     to_address=str(request.POST['to_address'])
     amt=float(request.POST['amt'])/1000
     cmt=request.POST['to_address']
-    #conn.sendfrom(account,to_address, amt,1,cmt)
+    conn.sendfrom(account,to_address, amt,1,cmt)
     return redirect('app.views.account')
 
 
 def delete_acct(request):
     account=str(request.user)
     return redirect('app.views.account')
+
+
+def set_odds(request,stage_id=None):
+    stage = None
+    rider_formset = None
+    if stage_id:
+        stage = Stage.objects.get(pk=stage_id)
+        rider_queryset = StageRider.objects.filter(stage_id=stage_id)
+        rider_formset = OddsFormSet(queryset=rider_queryset)
+        for r in range(rider_queryset.count()):
+            rider_formset[r].visit = rider_queryset[r]
+    snav = StageDropdown()
+    return render(request, 'app/set_odds.html', locals())
 
 
