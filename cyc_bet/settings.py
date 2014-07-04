@@ -21,11 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '#xm)_42(@u@t-%tkcf=kc5oikcz4i6%zt47_ew3_*v-^sdnhyl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -74,6 +74,7 @@ if sys.platform == 'win32':
 
     STATIC_URL = '/static/'
 else:
+    DEBUG = False
     #HEROKU
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
