@@ -56,6 +56,7 @@ def index(request):
                 parlay = pform.save(commit=False)
                 parlay.status=2
                 parlay.save()
+                save_parlay=False
                 tot_amt=parlay.amt
                 for form in bet_data.cleaned_data:
                     if (form['amt'] > 0 and form['parlay']==False) or (form['parlay'] and parlay.amt>0):
@@ -64,7 +65,10 @@ def index(request):
                         form['id'].parlay = form['parlay']
                         if form['parlay'] and parlay.amt>0:
                             form['id'].parlay_bet = parlay
+                            save_parlay=True
                         form['id'].save()
+                if not save_parlay:
+                    parlay.delete()
                 (bet_formset, bet_queryset, t, c) = make_bet_table(request.user)
     return render(request, 'app/index.html',locals())
 
@@ -75,7 +79,7 @@ def race(request, race_id=None):
     if Race.objects.get(id=race_id).status==1:
         race=Race.objects.get(id=race_id)
         stages=Stage.objects.filter(race_id=race_id,date__gt=datetime.date.today()).exclude(name__in=['General Classification',race.name])
-        overall = Stage.objects.get(race=race,name='General Classification')
+        overall = Stage.objects.get(race=race,name='General Classification') if Stage.objects.filter(race=race,name='General Classification').count()>0 else Stage.objects.get(race=race)
         gc_riders=StageRider.objects.filter(stage=overall,gcodds__gt=0)
         for s in range(len(gc_riders)):
             gc_riders[s].team = gc_riders[s].rider.teams.all()[0]
@@ -100,15 +104,21 @@ def race(request, race_id=None):
                     parlay = pform.save(commit=False)
                     parlay.status=2
                     parlay.save()
+                    print parlay.id
+                    save_parlay=False
                     tot_amt=parlay.amt
                     for form in bet_data.cleaned_data:
+                        print form['id'].odds
                         if (form['amt'] > 0 and form['parlay']==False) or (form['parlay'] and parlay.amt>0):
                             form['id'].status = 2
                             form['id'].amt = form['amt']
                             form['id'].parlay = form['parlay']
                             if form['parlay'] and parlay.amt>0:
                                 form['id'].parlay_bet = parlay
+                                save_parlay=True
                             form['id'].save()
+                    if not save_parlay:
+                        parlay.delete()
                     (bet_formset, bet_queryset, t, c) = make_bet_table(request.user)
     else:
         return redirect('app.views.index')#make a custom 404 for this- bet over
@@ -120,7 +130,7 @@ def stage(request, stage_id=None):
     stage=None
     stages=None
     stage_riders=None
-    if Stage.objects.get(id=stage_id).status==1:
+    if Stage.objects.get(id=stage_id).status==1 and Stage.objects.get(id=stage_id).name!='General Classification':
         stage=Stage.objects.get(id=stage_id)
         race=stage.race
         stages=Stage.objects.filter(race_id=race.id,date__gt=datetime.date.today()).exclude(name__in=['General Classification',race.name])
@@ -129,7 +139,7 @@ def stage(request, stage_id=None):
         for b in range(len(odds_formset)):
             odds_formset[b].lbl = stage_riders[b]
             odds_formset[b].team = stage_riders[b].rider.teams.all()[0]
-            odds_formset[b].odds = stage_riders[b].winodds
+            odds_formset[b].oddslabel = stage_riders[b].winodds
         if request.user.is_authenticated():
             account,account_balance=ab(request.user)
             parlay = Parlay(user=request.user, status=1)
@@ -142,6 +152,7 @@ def stage(request, stage_id=None):
                     parlay = pform.save(commit=False)
                     parlay.status=2
                     parlay.save()
+                    save_parlay=False
                     tot_amt=parlay.amt
                     for form in bet_data.cleaned_data:
                         if (form['amt'] > 0 and form['parlay']==False) or (form['parlay'] and parlay.amt>0):
@@ -150,7 +161,10 @@ def stage(request, stage_id=None):
                             form['id'].parlay = form['parlay']
                             if form['parlay'] and parlay.amt>0:
                                 form['id'].parlay_bet = parlay
+                                save_parlay=True
                             form['id'].save()
+                    if not save_parlay:
+                        parlay.delete()
                     (bet_formset, bet_queryset, t, c) = make_bet_table(request.user)
     else:
         return redirect('app.views.index')#make a custom 404 for this- bet over
@@ -162,8 +176,16 @@ def add_to_betslip(request):
     off_id = off_id_str.split('_')[0]
     gc_or_other=off_id_str.split('_')[1]
     offer=StageRider.objects.get(id=int(off_id))
-    bet_object=Bet.objects.create(offer=offer,user=request.user,bet_cat=gc_or_other)
-    #LOGIC TO NOT ALLOW CERTAIN BETS
+    if gc_or_other == 'STAGE':
+        bet_object=Bet.objects.create(offer=offer,user=request.user,bet_cat=gc_or_other, odds = offer.winodds)
+    if gc_or_other == 'GC':
+        bet_object=Bet.objects.create(offer=offer,user=request.user,bet_cat=gc_or_other, odds = offer.gcodds)
+    if gc_or_other == 'MTN':
+       bet_object=Bet.objects.create(offer=offer,user=request.user,bet_cat=gc_or_other, odds = offer.mtnodds)
+    if gc_or_other == 'SPRNT':
+        bet_object=Bet.objects.create(offer=offer,user=request.user,bet_cat=gc_or_other, odds = offer.sprntodds)
+    if gc_or_other == 'YTH':
+        bet_object=Bet.objects.create(offer=offer,user=request.user,bet_cat=gc_or_other, odds = offer.ythodds)
     (bet_formset, bet_queryset, t, c) = make_bet_table(request.user)
     data = t.render(c)
     return HttpResponse(data)
@@ -181,25 +203,25 @@ def remove_from_betslip(request):
 def make_bet_table(user):
     open_bets = Bet.objects.filter(status=1, user=user)
     formset = BetFormset(queryset=open_bets, prefix='bet')
-    t=Template("{{formset.management_form}}{% for tr in formset%}<tr id='{{tr.lbl.id}}'> <td>{{tr.id}}{{tr.offer}}{{tr.user}}{{tr.status}}{{tr.bet_cat}} <b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td><td>{{tr.odds}}:1</td> <td><div id='amt-{{tr.lbl.id}}'>{{tr.amt}}</div></td><td>{{tr.parlay}}</td><td><img src='/static/img/x.png' class='small remove_bet'></td></tr>{%endfor%}")
+    t=Template("{{formset.management_form}}{% for tr in formset%}<tr id='{{tr.lbl.id}}'> <td>{{tr.id}}{{tr.odds}}{{tr.offer}}{{tr.user}}{{tr.status}}{{tr.bet_cat}} <b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td><td>{{tr.oddslabel}}:1</td> <td><div id='amt-{{tr.lbl.id}}'>{{tr.amt}}</div></td><td>{{tr.parlay}}</td><td><img src='/static/img/x.png' class='small remove_bet'></td></tr>{%endfor%}")
     c = Context({"formset":formset})
     for b in range(len(formset)):
         formset[b].lbl = open_bets[b]
         formset[b].rider = open_bets[b].offer.rider
         if open_bets[b].bet_cat == 'STAGE':
-            formset[b].odds = open_bets[b].offer.winodds
+            formset[b].oddslabel = open_bets[b].offer.winodds
             formset[b].comp = open_bets[b].bet_cat
         if open_bets[b].bet_cat == 'GC':
-            formset[b].odds = open_bets[b].offer.gcodds
+            formset[b].oddslabel = open_bets[b].offer.gcodds
             formset[b].comp = open_bets[b].bet_cat
         if open_bets[b].bet_cat == 'MTN':
-            formset[b].odds = open_bets[b].offer.mtnodds
+            formset[b].oddslabel = open_bets[b].offer.mtnodds
             formset[b].comp = open_bets[b].bet_cat
         if open_bets[b].bet_cat == 'SPRNT':
-            formset[b].odds = open_bets[b].offer.sprntodds
+            formset[b].oddslabel = open_bets[b].offer.sprntodds
             formset[b].comp = open_bets[b].bet_cat
         if open_bets[b].bet_cat == 'YTH':
-            formset[b].odds = open_bets[b].offer.ythodds
+            formset[b].oddslabel = open_bets[b].offer.ythodds
             formset[b].comp = open_bets[b].bet_cat
         formset[b].stage = open_bets[b].offer.stage
         formset[b].race = open_bets[b].offer.stage.race
@@ -249,21 +271,6 @@ def account(request):
 
 def account_bets(queryset):
     for b in queryset:
-        if b.bet_cat == 'STAGE':
-            b.odds = b.offer.winodds
-            b.res = b.offer.winres
-        if b.bet_cat == 'GC':
-            b.odds = b.offer.gcodds
-            b.res = b.offer.gcres
-        if b.bet_cat == 'MTN':
-            b.odds = b.offer.mtnodds
-            b.res = b.offer.mtnres
-        if b.bet_cat == 'SPRNT':
-            b.odds = b.offer.sprntodds
-            b.res = b.offer.sprntres
-        if b.bet_cat == 'YTH':
-            b.odds = b.offer.ythodds
-            b.res = b.offer.ythres
         b.team = b.offer.rider.teams.all()[0]
         seq=(b.offer.rider.name,b.offer.stage.name,b.offer.stage.race.name,b.bet_cat)
         b.bet_string='-'.join(seq)
@@ -283,6 +290,7 @@ def account_parlays(queryset):
             cl='child'
             seq=(b.offer.rider.name,b.offer.stage.name,b.offer.stage.race.name,b.bet_cat)
             be='-'.join(seq)
+            '''
             if b.bet_cat == 'STAGE':
                 b.odds = b.offer.winodds
                 b.res = b.offer.winres
@@ -298,11 +306,10 @@ def account_parlays(queryset):
             if b.bet_cat == 'YTH':
                 b.odds = b.offer.ythodds
                 b.res = b.offer.ythres
+            '''
             pod=pod*b.odds
-            if b.res==False:
-                res=False
             child_rows.append(['child', be, b.odds,'-',b.res])
-        col_par_tbl.append(['header', 'Parlay # %i'%p.id,pod, p.amt,res])
+        col_par_tbl.append(['header', 'Parlay # %i'%p.id,pod, p.amt,p.res])
         col_par_tbl+=child_rows
     print col_par_tbl
     return col_par_tbl

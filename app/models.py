@@ -147,6 +147,10 @@ class Bet(models.Model):
         ('SPRNT', 'Sprinter'),
         ('YTH', 'Youth'),
      )
+    RES_CHOICES = (
+        (True, 'W'),
+        (False, 'L'),
+     )
     amt = models.FloatField(null=True, blank=True,verbose_name="bet amount mBtC")
     user = models.ForeignKey(User)
     offer = models.ForeignKey("StageRider")
@@ -154,6 +158,8 @@ class Bet(models.Model):
     parlay=models.BooleanField(null=False, blank=False, default=False)
     parlay_bet=models.ForeignKey("Parlay", null=True, blank=True)
     bet_cat = models.CharField(null=False, max_length=10,blank = False, choices = BET_CATS)
+    odds = models.IntegerField(max_length=5, null=True, blank=True)
+    res = models.BooleanField(null=False, blank=True, choices=RES_CHOICES, default=False)
     class Meta:
         unique_together = ("user","status","offer","bet_cat","parlay_bet")
         ordering = ['id']
@@ -164,9 +170,15 @@ class Parlay(models.Model):
         (2, 'Submitted'),
         (3, 'Paid'),
      )
+    RES_CHOICES = (
+        (True, 'W'),
+        (False, 'L'),
+     )
     amt = models.FloatField(null=True, blank=True,verbose_name="Parlay Amount mBtC")
     user = models.ForeignKey(User)
     status=models.IntegerField(max_length=1,choices=BET_STATUS,default=1)
+    #odds = models.IntegerField(max_length=5, null=True, blank=True) EASILY OBTAINED FROM SINGLE BETS
+    res = models.BooleanField(null=False, blank=True, choices=RES_CHOICES, default=False)
     class Meta:
         #unique_together = ("user","status")
         ordering = ['id']

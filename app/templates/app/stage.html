@@ -25,7 +25,7 @@
             <tbody>
        {{ odds_formset.management_form }}
       {% for tr in odds_formset %}
-   <tr id="{{tr.lbl.id}}_STAGE"> <td>{{tr.id}}{{tr.status}} {{ tr.lbl.rider.name}}</a></td> <td>{{tr.team}}</td><td>{{tr.odds}}:1</td><td>{%if user.is_authenticated %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet">{%endif%}</td></tr>
+   <tr id="{{tr.lbl.id}}_STAGE"> <td>{{tr.id}}{{tr.status}} {{ tr.lbl.rider.name}}</a></td> <td>{{tr.team}}</td><td>{{tr.oddslabel}}:1</td><td>{%if user.is_authenticated %}<img src="{{ STATIC_URL }}img/plus.png" class="small add_bet">{%endif%}</td></tr>
       {% endfor %}
             </tbody>
         </table></div>

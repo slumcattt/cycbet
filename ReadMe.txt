@@ -224,7 +224,7 @@ to delete the heroku posgre database:
 2. in bash: $heroku addons:add heroku-postgresql
 3. push and run
 4. heroku run python manage.py syncdb
-
+aiden, atmchugh@wisc,Lucky#101
 
 icons - https://www.iconfinder.com/iconsets/flat-ui-icons-24-px
 

@@ -163,8 +163,8 @@
 
 {% for tr in bet_formset%}
 
-             <tr id="{{tr.lbl.id}}"> <td> {{tr.id}} {{tr.bet_cat}}{{tr.status}}{{tr.offer}}{{tr.user}}<b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td>
-                 <td>{{tr.odds}}:1</td> <td><div id="amt-{{tr.lbl.id}}">{{tr.amt}}</div></td><td>{{tr.parlay}}</td><td><img src="{{ STATIC_URL }}img/x.png" class="small remove_bet"></td></tr>
+             <tr id="{{tr.lbl.id}}"> <td> {{tr.id}}{{tr.odds}} {{tr.bet_cat}}{{tr.status}}{{tr.offer}}{{tr.user}}<b>{{ tr.rider}} - <small>{{tr.team}}</small></b><br><small>{{tr.stage}}-{{tr.comp}}</small></td>
+                 <td>{{tr.oddslabel}}:1</td> <td><div id="amt-{{tr.lbl.id}}">{{tr.amt}}</div></td><td>{{tr.parlay}}</td><td><img src="{{ STATIC_URL }}img/x.png" class="small remove_bet"></td></tr>
       {% endfor %}
             </tbody>
         </table>
@@ -282,8 +282,8 @@ $( "#submit_bet" ).show();
 
  $("tr.child").hide();
 
-   $("tr.header").click(function () {
-      $("tr.child", $(this).parent()).slideToggle("fast");
+   $("tr.header").click(function(){
+    $(this).nextUntil('tr.header').slideToggle('fast');
  $(this).children('td').children('img').toggle();
 
 

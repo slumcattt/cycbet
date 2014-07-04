@@ -25,6 +25,8 @@ class Bets(ModelForm):
             'offer':HiddenInput(),
             'bet_cat':HiddenInput(),
             'id':HiddenInput(),
+            'odds':HiddenInput(),
+            'res':HiddenInput(),
             }
 
 class Parlays(ModelForm):
@@ -37,6 +39,7 @@ class Parlays(ModelForm):
             'status': HiddenInput(),
             'user':HiddenInput(),
             'id':HiddenInput(),
+            'res':HiddenInput(),
             }
 
 class UserCreateForm(UserCreationForm):

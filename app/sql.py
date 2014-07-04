@@ -12,10 +12,9 @@ import bitcoinrpc as b
 #c=b.connect_to_remote('aiden','Peyton18','107.170.92.113',8332)
 conn = b.connect_to_remote('56a10cd1-a243-4c7e-9f6a-a7ad18c21ce1','keikolucky1','rpc.blockchain.info','80')
 '''
-for race
-open startlist soup
-for r in rider=
-RiderStage(rider=r, stage=s
+set stage filter to where stage_status = 2 (not 1)
+set stage statuses to 3 after payout
+do payout logic
 '''
 base_url='http://www.procyclingstats.com'
 
@@ -203,11 +202,13 @@ def doit():
 
 def payit():
     bet_pay()
+    print 'Single bets paid and closed'
     parlay_pay()
+    print 'Parlay bets run'
 
 
 def bet_pay():
-    #SET TODAYS STAGE TO PENDING (CANNOT BET ON ANYMORE
+    #SET TODAYS STAGE TO PENDING (CANNOT BET ON ANYMORE)
     todays_stages=Stage.objects.filter(date=datetime.date.today())
     todays_stages.status=2
     #SELECT STAGES WHERE A WINNER IS MARKED OFF, PAYOUT SIGLE BETS ON THESE MARK PARLAY BETS AS
@@ -217,39 +218,74 @@ def bet_pay():
     for o in offers:
         betset=o.bet_set.filter(status=2) #get all submitted bets for a stage-rider
         for b in betset:
-            status_change_stage,status_change_stages=make_bet_results(o.winodds, o.winres, o,status_change_stage,status_change_stages,b,'STAGE')
-            status_change_stage,status_change_stages=make_bet_results(o.gcodds, o.gcres, o,status_change_stage,status_change_stages,b,'GC')
-            status_change_stage,status_change_stages=make_bet_results(o.mtnodds, o.mtnres, o,status_change_stage,status_change_stages,b,'MTN')
-            status_change_stage,status_change_stages=make_bet_results(o.sprntodds, o.sprntres, o,status_change_stage,status_change_stages,b,'SPRNT')
-            status_change_stage,status_change_stages=make_bet_results(o.ythodds, o.ythres, o,status_change_stage,status_change_stages,b,'YTH')
+            status_change_stage,status_change_stages=make_bet_results(o,b,status_change_stage,status_change_stages)
+    offers=StageRider.objects.filter(stage__status=1)
+    for o in offers:
+        if o.winres or o.gcres or o.mtnres or o.sprntres or o.ythres:
+            #Following builds array of stages to close up because the result is recorded and you are paying
+            if status_change_stage==o.stage:
+                pass
+            else:
+                status_change_stage=o.stage
+                status_change_stages.append(o.stage)
+            settled_bets=o.bet_set.filter(status=2)
+            #if there is a winner selected for a category, set all the bets to completed
+            for sb in settled_bets:
+                sb.status=3
+                sb.save()
     for s in status_change_stages:
         s.status=3 #set the stage to completed wherever results were posted
         #s.save()
         print s
 
-
-def make_bet_results(odds, res, o,status_change_stage,status_change_stages,b,bet_cat):
-    if odds and res:
-        #Following if/else builds array of stages that are paid out
-        if status_change_stage==o.stage:
-            pass
-        else:
-            status_change_stage=o.stage
-            status_change_stages.append(o.stage)
-            settled_bets=o.bet_set.filter(status=2)
-            #if there is a winner selected for a category, set all the bets to completed
-            for sb in settled_bets:
-                sb.status=3
-                #sb.save()
-        if b.bet_cat==bet_cat and b.parlay==False:
-            pay_amt=b.amt*odds
-            #PAYOUT HERE
-            print b.amt, b.user, b.status
+def make_bet_results(o,b,status_change_stage,status_change_stages):
+    #if the offer has a result and it is a single bet
+    if b.bet_cat=='STAGE' and o.winres and b.parlay==False:
+        pay_amt=b.amt*b.odds
+        b.res=True#PAYOUT HERE
+        b.save()
+        print b.amt, b.user, b.status
+    if b.bet_cat=='GC' and o.gcres and b.parlay==False:
+        pay_amt=b.amt*b.odds
+        b.res=True#PAYOUT HERE
+        b.save()
+        print b.amt, b.user, b.status
+    if b.bet_cat=='MTN' and o.mtnres and b.parlay==False:
+        pay_amt=b.amt*b.odds
+        b.res=True#PAYOUT HERE
+        b.save()
+        print b.amt, b.user, b.status
+    if b.bet_cat=='SPRNT' and o.sprntres and b.parlay==False:
+        pay_amt=b.amt*b.odds
+        b.res=True#PAYOUT HERE
+        b.save()
+        print b.amt, b.user, b.status
+    if b.bet_cat=='YTH' and o.ythres and b.parlay==False:
+        pay_amt=b.amt*b.odds
+        b.res=True#PAYOUT HERE
+        b.save()
+        print b.amt, b.user, b.status
+    #if the offer has a result and it is a PARLAY
+    if b.bet_cat=='STAGE' and o.winres and b.parlay==True:
+        b.res=True
+        b.save()
+    if b.bet_cat=='GC' and o.gcres and b.parlay==True:
+        b.res=True
+        b.save()
+    if b.bet_cat=='MTN' and o.mtnres and b.parlay==True:
+        b.res=True
+        b.save()
+    if b.bet_cat=='SPRNT' and o.sprntres and b.parlay==True:
+        b.res=True
+        b.save()
+    if b.bet_cat=='YTH' and o.ythres and b.parlay==True:
+        b.res=True
+        b.save()
     return status_change_stage,status_change_stages
 
 
 def parlay_pay():
-    open_parlays=Parlay.objects.all().exclude(status=3)
+    open_parlays=Parlay.objects.filter(status=2)
     for op in open_parlays:
         pay=True
         winning_parlay_odds=[]
@@ -259,33 +295,24 @@ def parlay_pay():
             if opb.status !=3:
                 pay=False
                 print 'bet still open',op.id, opb.id
-            #if bet closed, but lost
-            elif (opb.bet_cat=='STAGE' and not opb.offer.winres) or (opb.bet_cat=='GC' and not opb.offer.gcres) or (opb.bet_cat=='MTN'
-                    and not opb.offer.mtnres) or (opb.bet_cat=='SPRNT' and not opb.offer.sprntres) or (opb.bet_cat=='YTH' and not opb.offer.ythres):
-                op.status=3
-                #op.save()
-                pay=False
+            #if won, append to winning bets string
+            elif opb.res==True:
+                winning_parlay_odds.append(opb.odds)
             else:
-                #append the willing parlay bet thing
-                if opb.bet_cat=='STAGE':
-                    winning_parlay_odds.append(opb.offer.winodds)
-                elif opb.bet_cat=='GC':
-                    winning_parlay_odds.append(opb.offer.gcodds)
-                elif opb.bet_cat=='MTN':
-                    winning_parlay_odds.append(opb.offer.mtnodds)
-                elif opb.bet_cat=='SPRNT':
-                    winning_parlay_odds.append(opb.offer.sprntodds)
-                elif opb.bet_cat=='YTH':
-                    winning_parlay_odds.append(opb.offer.ythodds)
+                #if closed or open and didn't win
+                op.status=3
+                op.save()
+                pay=False
         if pay:
             tot_odds=1
             for wpo in winning_parlay_odds:
                 tot_odds=tot_odds*wpo
             tot_amt=tot_odds*op.amt if op.amt else None
             op.status=3
-            #op.save()
+            op.res=True
+            op.save()
             #PAYOUT HERE
-            print tot_amt,tot_amt
+            print tot_amt,'PARLAY WIN'
 
 
 
