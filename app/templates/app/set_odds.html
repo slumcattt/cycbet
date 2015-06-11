@@ -1,105 +1,155 @@
-        {% extends "app/base.html" %}
-{% load staticfiles %}
 
-{%block middle%}
-     <h2>Account - {{request.user}}</h2>
-                <hr>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>rg3k</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-                    <h4>Account Balance (mBtC): {{account_balance}} </h4>
-                 <hr>
-
-                           <h4>Account Addresses:</h4>
-                     <table class="table table-striped">
-
-                   <tbody>
-                    {% for a in account_address %}
-                    <tr><td>{{a}} </td></tr>
-                    {% endfor%}
-                    </tbody></table>
-                    <form method="POST" action="{% url 'app.views.get_new_address' %}">
-                    {% csrf_token %}
-  <button type="submit" class="btn btn-default">Get New Address</button>
-  </form>
-  <small>Deposit funds to one of these addresses</small>
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
 
 
-                    <h4>Withdraw Funds</h4>
-                                      <form method="POST" action="{% url 'app.views.withdraw' %}" >
-                    {% csrf_token %}
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+
+            .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+        img.small{height:18px; width:auto; cursor: pointer; cursor: hand;}
+      img.med{height:100px; width:auto;}
+
+        img.mid{
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+        body{background-color:#FFFF99; }
+       .span8{background-color:white; text-align:center;/* height: 100vh; */}
+        .span2{background-color:white; text-align:center;/* height: 100vh; */}
+
+        .bet_amt{width:25px}
+
+            .table-div {
+        max-height: 500px;
+        width:100%;
+        overflow-x: scroll;
+        overflow-y: scroll;
+    }
+        tr.header{background-color: #f9f9f9; font-weight:bold;}
 
 
-                            <div class="form-group">
-    <label>Send to address</label>
-    <input input type="text" name="to_address" class="form-control" >
-  </div>
-  <div class="form-group">
-    <label>Amount (mBtC)</label>
-    <input input type="text" name="amt" class="form-control">
-  </div>
-  <div class="form-group">
-    <label>Comment (optional)</label>
-    <input input type="text" name="cmt" class="form-control">
-  </div>
+    </style>
 
 
-  <button type="submit" class="btn btn-default">Withdraw</button>
-  </form>
 
-                     <hr>
+    <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
 
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+     <!-- <script src="../assets/js/html5shiv.js"></script> -->
+    <![endif]-->
 
-                    <!--    <h4>Delete Account</h4>
-                                      <form method="POST" action="{% url 'app.views.delete_acct' %}">
-                    {% csrf_token %}
-  <button type="submit" class="btn btn-default">Delete Account</button>
-  </form> -->
-
-
-{%endblock%}  {%block right %}
-
-                             <h4>Open Single Bets</h4>
-
-
-           <div class=table-div><table class="table table-striped"><thead><th>Bet</th><th>Odds</th><th>Bet Amt</th></thead>
-            <tbody>
-             {% for a in account_open_single_bets %}
-            <tr><td>{{a.bet_string}}</td><td>{{a.odds}}:1</td><td>{{a.amt}}</td></tr>
-            {% endfor %}
-            </tbody>
-        </table></div>
-                <h4>Open Parlay Bets</h4>
-
-                           <div class=table-div><table class="table "><thead><th>Bet</th><th>Odds</th><th>Bet Amt</th></thead>
-            <tbody>
-             {% for a in account_open_parlay_bets %}
-
-            <tr class='{{a.0}}'><td>{% if a.0 = 'header' %}<img src="{{ STATIC_URL }}img/down_arrow.png" class="small open_parlay">{%endif%}{{a.1}}</td><td>{{a.2}}:1</td><td>{{a.3}}</td></tr>
-
-             {% endfor %}
-            </tbody>
-        </table></div>
-
-                <hr>
-                                <h4>Closed Single Bets</h4>
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+  </head>
+<body>
 
 
-           <div class=table-div><table class="table table-striped"><thead><th>Bet</th><th>Odds</th><th>Bet Amt</th><th>Bet Result</th></thead>
-            <tbody>
-             {% for a in account_closed_single_bets %}
-            <tr><td>{{a.bet_string}}</td><td>{{a.odds}}:1</td><td>{{a.amt}}</td><td>{{a.res}}</td></tr>
-            {% endfor %}
-            </tbody>
-        </table></div>
+{{snav.as_p}}
 
-                       <h4>Closed Parlay Bets</h4>
+{%  if stage %}
+<form method="post" action="">
 
-                                              <div class=table-div><table class="table "><thead><th>Bet</th><th>Odds</th><th>Bet Amt</th><th>Bet Result</th></thead>
-            <tbody>
-             {% for a in account_closed_parlay_bets %}
+     {% csrf_token %}
+  <button type="submit" class="btn btn-default">Submit odds</button>
+    <table>
+    <thead>Rider</th><th>Winodds</th><th>GCodds</th><th>MtnOdds</th><th>Sprntodds</th><th>Ythodds</thead>
+        <tbody>
+        {{rider_formset.management_form}}
 
-            <tr class='{{a.0}}'><td>{% if a.0 = 'header' %}<img src="{{ STATIC_URL }}img/down_arrow.png" class="small open_parlay">{% endif %}{{a.1}}</td><td>{{a.2}}:1</td><td>{{a.3}}</td><td>{{a.4}}</td></tr>
+    {%  for tr in rider_formset %}
 
-             {% endfor %}
-            </tbody>
-        </table></div>
-                {%endblock%}
+<tr id="{{ tr.lbl.id}}">
+    <td>{{tr.id}}{{tr.stage}}{{tr.rider}}{{ tr.lbl.rider.name}}
+    {{ tr.winres }}{{ tr.gcres }}{{ tr.mtnres }}{{ tr.sprntres }}{{ tr.ythres }}</td>
+    <td>{{ tr.winodds }}</td>
+    <td>{{ tr.gcodds }}</td>
+      <td>{{ tr.mtnodds }}</td>
+        <td>{{ tr.sprntodds }}</td>
+        <td>{{ tr.ythodds }}</td></tr>{% endfor %}
+       </tbody>
+
+     </table>
+</form>
+
+{% endif %}
+
+
+
+    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+ <script src="{{ STATIC_URL }}js/ajaxfix.js"></script>
+
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+
+             <script type="text/javascript">
+
+ $(function(){
+
+    $('#id_stage_select').change(function(){
+            var stage_id = $(this).val();
+            window.location="{% url 'app.views.set_odds' 9999999 %}".replace('9999999', stage_id);
+
+        });
+
+
+
+
+});
+    </script>
+   <!-- <script src="../assets/js/bootstrap-transition.js"></script>
+    <script src="../assets/js/bootstrap-alert.js"></script>
+    <script src="../assets/js/bootstrap-modal.js"></script>
+    <script src="../assets/js/bootstrap-dropdown.js"></script>
+    <script src="../assets/js/bootstrap-scrollspy.js"></script>
+    <script src="../assets/js/bootstrap-tab.js"></script>
+    <script src="../assets/js/bootstrap-tooltip.js"></script>
+    <script src="../assets/js/bootstrap-popover.js"></script>
+    <script src="../assets/js/bootstrap-button.js"></script>
+    <script src="../assets/js/bootstrap-collapse.js"></script>
+    <script src="../assets/js/bootstrap-carousel.js"></script>
+    <script src="../assets/js/bootstrap-typeahead.js"></script> -->
+
+
+
+  </body>
+</html>

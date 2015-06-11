@@ -47,9 +47,9 @@ class Bets(ModelForm):
 
 class Parlays(ModelForm):
     error_css_class = 'error'
+    exclude = ['',]
     class Meta:
         model = Parlay
-        exclude = ['',]
         widgets = {
             'amt': TextInput(attrs={'class':'bet_amt',}),
             'status': HiddenInput(),

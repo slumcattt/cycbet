@@ -56,13 +56,14 @@ WSGI_APPLICATION = 'cyc_bet.wsgi.application'
 DATABASES={'default':{}}
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {
+
+if 'aiden' in str(os.path):
+	DATABASES = {
 	    'default': {
 		'ENGINE': 'django.db.backends.sqlite3',
 		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 	    }
 	}
-if 'aiden' in str(os.path):
     MEDIA_ROOT = "C:/Users/aiden/desktop/cyc_bet/media/"
     MEDIA_URL = '/media/'
 

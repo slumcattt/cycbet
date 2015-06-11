@@ -18,7 +18,7 @@
     <td>{{ form.password }}</td>
 </tr>
 </table>
-       <button class="btn btn-lg btn-primary btn-block" type="submit" value="login">Log in</button> 
+       <button class="btn btn-info" type="submit" value="login">Log in</button> 
 <input type="hidden" name="next" value="{% url 'app.views.index' %}" />
       </form>
 
